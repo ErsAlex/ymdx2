@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:15.6
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+  app:
+    container_name: yndx_map
+    command: uvicorn --factory api.app:create_app --reload --host 0.0.0.0 --port 8000
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  dbdata:
